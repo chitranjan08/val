@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A surpeise for you</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Card */
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+h1 {
+  color: #e63946;
+}
+
+button {
+  padding: 12px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+#yesBtn {
+  background: #38b000;
+  color: white;
+}
+
+#noBtn {
+  background: #d00000;
+  color: white;
+  position: absolute;
+}
+
+.love {
+  margin-top: 20px;
+  font-size: 26px;
+  color: #e63946;
+}
+
+/* Confetti */
+.confetti, .heart {
+  position: fixed;
+  top: -10px;
+  z-index: 9999;
+  animation: fall linear forwards;
+}
+
+.confetti {
+  width: 10px;
+  height: 10px;
+}
+
+.heart {
+  font-size: 20px;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Firework */
+.firework {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: yellow;
+  border-radius: 50%;
+  animation: explode 1s ease-out forwards;
+  z-index: 9999;
+}
+
+@keyframes explode {
+  to {
+    transform: scale(20);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+
+<div class="card">
+  <h1>Will you be my Valentine? 💘</h1>
+  <button id="yesBtn">Yes 💖</button>
+  <button id="noBtn">No 💔</button>
+  <div id="result" class="love"></div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const result = document.getElementById("result");
+const music = document.getElementById("music");
+
+let noScale = 1;
+let yesScale = 1;
+let endlessConfetti;
+
+noBtn.addEventListener("mouseover", escapeNo);
+noBtn.addEventListener("click", escapeNo);
+
+function escapeNo() {
+  noScale -= 0.1;
+  yesScale += 0.1;
+
+  noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
+  noBtn.style.top = Math.random() * (window.innerHeight - 60) + "px";
+  noBtn.style.transform = `scale(${noScale})`;
+  yesBtn.style.transform = `scale(${yesScale})`;
+
+  if (noScale <= 0.3) noBtn.style.display = "none";
+}
+function autoScreenshot() {
+  html2canvas(document.body).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "valentine-moment.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+/* 🎉 ALL EFFECTS */
+yesBtn.addEventListener("click", () => {
+  result.innerHTML = "YAYYYY 💕 You’re my Valentine 😍";
+  music.play();
+
+  confettiCannons();
+  fireWorks();
+  heartConfetti();
+  startEndlessConfetti();
+
+  setTimeout(() => {
+   // 📸 AUTO DOWNLOAD
+  }, 800);
+});
+
+
+/* Confetti Cannons */
+function confettiCannons() {
+  for (let i = 0; i < 200; i++) {
+    createConfetti(Math.random() < 0.5 ? "0vw" : "100vw");
+  }
+}
+
+/* Fireworks */
+function fireWorks() {
+  for (let i = 0; i < 6; i++) {
+    const fw = document.createElement("div");
+    fw.className = "firework";
+    fw.style.left = Math.random() * 100 + "vw";
+    fw.style.top = Math.random() * 60 + "vh";
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 1000);
+  }
+}
+
+/* Heart Confetti */
+function heartConfetti() {
+  for (let i = 0; i < 80; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = Math.random() * 2 + 2 + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }
+}
+
+/* Endless Confetti */
+function startEndlessConfetti() {
+  if (endlessConfetti) return;
+  endlessConfetti = setInterval(() => createConfetti(Math.random() * 100 + "vw"), 300);
+}
+
+function createConfetti(x) {
+  const colors = ["#ff0a54", "#ff477e", "#ffd166", "#06d6a0", "#118ab2"];
+  const c = document.createElement("div");
+  c.className = "confetti";
+  c.style.left = x;
+  c.style.background = colors[Math.floor(Math.random() * colors.length)];
+  c.style.animationDuration = Math.random() * 2 + 2 + "s";
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 4000);
+}
+</script>
+
+</body>
+</html>
+
+
